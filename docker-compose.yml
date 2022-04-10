@@ -1,0 +1,29 @@
+version: '3.1'
+
+services:
+  redis:
+    image: redis:6.2
+    command: redis-server /usr/local/etc/redis/redis.conf
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+  
+  mysql:
+    env_file:
+      - .env
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+
+  app:
+    env_file:
+      - .env
+    ports:
+      - 80:3000
+    build: .
+    depends_on: 
+      - redis
+      - mysql
+ 
